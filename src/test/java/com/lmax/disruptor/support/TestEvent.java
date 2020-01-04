@@ -17,19 +17,15 @@ package com.lmax.disruptor.support;
 
 import com.lmax.disruptor.EventFactory;
 
-public final class TestEvent
-{
-    @Override
-    public String toString()
-    {
-        return "Test Event";
-    }
-
-    public static final EventFactory<TestEvent> EVENT_FACTORY = new EventFactory<TestEvent>()
-    {
-        public TestEvent newInstance()
-        {
+public final class TestEvent {
+    public static final EventFactory<TestEvent> EVENT_FACTORY = new EventFactory<TestEvent>() {
+        public TestEvent newInstance() {
             return new TestEvent();
         }
     };
+
+    @Override
+    public String toString() {
+        return "Test Event";
+    }
 }

@@ -63,8 +63,7 @@ import java.util.concurrent.*;
  *
  * </pre>
  */
-public final class ThreeToOneQueueBatchThroughputTest extends AbstractPerfTestQueue
-{
+public final class ThreeToOneQueueBatchThroughputTest extends AbstractPerfTestQueue {
     private static final int NUM_PUBLISHERS = 3;
     private static final int BUFFER_SIZE = 1024 * 64;
     private static final long ITERATIONS = 1000L * 1000L * 20L;
@@ -75,34 +74,34 @@ public final class ThreeToOneQueueBatchThroughputTest extends AbstractPerfTestQu
 
     private final BlockingQueue<Long> blockingQueue = new ArrayBlockingQueue<Long>(BUFFER_SIZE);
     private final ValueAdditionQueueBatchProcessor queueProcessor =
-        new ValueAdditionQueueBatchProcessor(blockingQueue, ((ITERATIONS / NUM_PUBLISHERS) * NUM_PUBLISHERS) - 1L);
+            new ValueAdditionQueueBatchProcessor(blockingQueue, ((ITERATIONS / NUM_PUBLISHERS) * NUM_PUBLISHERS) - 1L);
     private final ValueQueuePublisher[] valueQueuePublishers = new ValueQueuePublisher[NUM_PUBLISHERS];
 
     {
-        for (int i = 0; i < NUM_PUBLISHERS; i++)
-        {
+        for (int i = 0; i < NUM_PUBLISHERS; i++) {
             valueQueuePublishers[i] =
-                new ValueQueuePublisher(cyclicBarrier, blockingQueue, ITERATIONS / NUM_PUBLISHERS);
+                    new ValueQueuePublisher(cyclicBarrier, blockingQueue, ITERATIONS / NUM_PUBLISHERS);
         }
     }
 
     ///////////////////////////////////////////////////////////////////////////////////////////////
 
+    public static void main(String[] args) throws Exception {
+        new ThreeToOneQueueBatchThroughputTest().testImplementations();
+    }
+
     @Override
-    protected int getRequiredProcessorCount()
-    {
+    protected int getRequiredProcessorCount() {
         return 4;
     }
 
     @Override
-    protected long runQueuePass() throws Exception
-    {
+    protected long runQueuePass() throws Exception {
         final CountDownLatch latch = new CountDownLatch(1);
         queueProcessor.reset(latch);
 
         Future<?>[] futures = new Future[NUM_PUBLISHERS];
-        for (int i = 0; i < NUM_PUBLISHERS; i++)
-        {
+        for (int i = 0; i < NUM_PUBLISHERS; i++) {
             futures[i] = executor.submit(valueQueuePublishers[i]);
         }
         Future<?> processorFuture = executor.submit(queueProcessor);
@@ -110,8 +109,7 @@ public final class ThreeToOneQueueBatchThroughputTest extends AbstractPerfTestQu
         long start = System.currentTimeMillis();
         cyclicBarrier.await();
 
-        for (int i = 0; i < NUM_PUBLISHERS; i++)
-        {
+        for (int i = 0; i < NUM_PUBLISHERS; i++) {
             futures[i].get();
         }
 
@@ -122,10 +120,5 @@ public final class ThreeToOneQueueBatchThroughputTest extends AbstractPerfTestQu
         processorFuture.cancel(true);
 
         return opsPerSecond;
-    }
-
-    public static void main(String[] args) throws Exception
-    {
-        new ThreeToOneQueueBatchThroughputTest().testImplementations();
     }
 }

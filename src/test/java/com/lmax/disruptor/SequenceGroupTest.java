@@ -15,25 +15,21 @@
  */
 package com.lmax.disruptor;
 
+import com.lmax.disruptor.support.TestEvent;
+import org.junit.Test;
+
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.*;
 
-import org.junit.Test;
-
-import com.lmax.disruptor.support.TestEvent;
-
-public final class SequenceGroupTest
-{
+public final class SequenceGroupTest {
     @Test
-    public void shouldReturnMaxSequenceWhenEmptyGroup()
-    {
+    public void shouldReturnMaxSequenceWhenEmptyGroup() {
         final SequenceGroup sequenceGroup = new SequenceGroup();
         assertEquals(Long.MAX_VALUE, sequenceGroup.get());
     }
 
     @Test
-    public void shouldAddOneSequenceToGroup()
-    {
+    public void shouldAddOneSequenceToGroup() {
         final Sequence sequence = new Sequence(7L);
         final SequenceGroup sequenceGroup = new SequenceGroup();
 
@@ -43,8 +39,7 @@ public final class SequenceGroupTest
     }
 
     @Test
-    public void shouldNotFailIfTryingToRemoveNotExistingSequence() throws Exception
-    {
+    public void shouldNotFailIfTryingToRemoveNotExistingSequence() throws Exception {
         SequenceGroup group = new SequenceGroup();
         group.add(new Sequence());
         group.add(new Sequence());
@@ -52,8 +47,7 @@ public final class SequenceGroupTest
     }
 
     @Test
-    public void shouldReportTheMinimumSequenceForGroupOfTwo()
-    {
+    public void shouldReportTheMinimumSequenceForGroupOfTwo() {
         final Sequence sequenceThree = new Sequence(3L);
         final Sequence sequenceSeven = new Sequence(7L);
         final SequenceGroup sequenceGroup = new SequenceGroup();
@@ -65,8 +59,7 @@ public final class SequenceGroupTest
     }
 
     @Test
-    public void shouldReportSizeOfGroup()
-    {
+    public void shouldReportSizeOfGroup() {
         final SequenceGroup sequenceGroup = new SequenceGroup();
         sequenceGroup.add(new Sequence());
         sequenceGroup.add(new Sequence());
@@ -76,8 +69,7 @@ public final class SequenceGroupTest
     }
 
     @Test
-    public void shouldRemoveSequenceFromGroup()
-    {
+    public void shouldRemoveSequenceFromGroup() {
         final Sequence sequenceThree = new Sequence(3L);
         final Sequence sequenceSeven = new Sequence(7L);
         final SequenceGroup sequenceGroup = new SequenceGroup();
@@ -93,8 +85,7 @@ public final class SequenceGroupTest
     }
 
     @Test
-    public void shouldRemoveSequenceFromGroupWhereItBeenAddedMultipleTimes()
-    {
+    public void shouldRemoveSequenceFromGroupWhereItBeenAddedMultipleTimes() {
         final Sequence sequenceThree = new Sequence(3L);
         final Sequence sequenceSeven = new Sequence(7L);
         final SequenceGroup sequenceGroup = new SequenceGroup();
@@ -111,8 +102,7 @@ public final class SequenceGroupTest
     }
 
     @Test
-    public void shouldSetGroupSequenceToSameValue()
-    {
+    public void shouldSetGroupSequenceToSameValue() {
         final Sequence sequenceThree = new Sequence(3L);
         final Sequence sequenceSeven = new Sequence(7L);
         final SequenceGroup sequenceGroup = new SequenceGroup();
@@ -128,16 +118,14 @@ public final class SequenceGroupTest
     }
 
     @Test
-    public void shouldAddWhileRunning() throws Exception
-    {
+    public void shouldAddWhileRunning() throws Exception {
         RingBuffer<TestEvent> ringBuffer = RingBuffer.createSingleProducer(TestEvent.EVENT_FACTORY, 32);
         final Sequence sequenceThree = new Sequence(3L);
         final Sequence sequenceSeven = new Sequence(7L);
         final SequenceGroup sequenceGroup = new SequenceGroup();
         sequenceGroup.add(sequenceSeven);
 
-        for (int i = 0; i < 11; i++)
-        {
+        for (int i = 0; i < 11; i++) {
             ringBuffer.publish(ringBuffer.next());
         }
 
