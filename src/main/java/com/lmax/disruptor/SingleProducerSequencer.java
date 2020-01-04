@@ -33,6 +33,7 @@ abstract class SingleProducerSequencerFields extends SingleProducerSequencerPad 
      */
     long nextValue = Sequence.INITIAL_VALUE;
     long cachedValue = Sequence.INITIAL_VALUE;
+
     SingleProducerSequencerFields(int bufferSize, WaitStrategy waitStrategy) {
         super(bufferSize, waitStrategy);
     }
